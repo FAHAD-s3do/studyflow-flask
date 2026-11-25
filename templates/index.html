@@ -30,7 +30,7 @@
         {% for task in tasks %}
           <article class="task-row {% if task.completed %}is-done{% endif %}">
             <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}"><button class="check" type="submit" aria-label="{% if task.completed %}Reopen{% else %}Complete{% endif %} {{ task.title }}">{% if task.completed %}✓{% endif %}</button></form>
-            <div class="task-main"><div class="task-title-line"><h3>{{ task.title }}</h3><span class="priority {{ task.priority }}">{{ task.priority }}</span></div><div class="task-meta"><span class="subject-dot"></span>{{ task.subject }}{% if task.due_date %}<span class="meta-divider">·</span><span class="{% if task.overdue %}overdue-text{% endif %}">{% if task.overdue %}Overdue · {% endif %}Due {{ task.due_date.strftime('%b %-d') if not task.overdue else task.due_date.strftime('%b %d') }}</span>{% endif %}</div></div>
+            <div class="task-main"><div class="task-title-line"><h3>{{ task.title }}</h3><span class="priority {{ task.priority }}">{{ task.priority }}</span></div><div class="task-meta"><span class="subject-dot"></span>{{ task.subject }}{% if task.due_date %}<span class="meta-divider">·</span><span class="{% if task.overdue %}overdue-text{% endif %}">{% if task.overdue %}Overdue · {% endif %}Due {{ task.due_date.strftime('%b %d') }}</span>{% endif %}</div></div>
             <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"><button class="delete" type="submit" aria-label="Delete {{ task.title }}" title="Delete task">×</button></form>
           </article>
         {% endfor %}
@@ -51,4 +51,6 @@
   </aside>
 </section>
 {% endblock %}
+
+
 
