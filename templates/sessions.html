@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Study Sessions · StudyFlow{% endblock %}
+{% block content %}
+<section class="page-intro"><div><p class="eyebrow"><span class="eyebrow-line"></span> BUILD YOUR FOCUS HABIT</p><h1>Study <span>sessions.</span></h1><p class="hero-copy">Log the work you put in, not just the deadlines you meet.</p></div><a class="back-link" href="{{ url_for('index') }}">← Back to planner</a></section>
+<section class="session-layout">
+  <div class="session-main">
+    <div class="session-summary"><span class="stat-icon violet">◷</span><div><span class="stat-label">This week</span><strong>{{ (week_minutes // 60) }}h {{ (week_minutes % 60) }}m</strong></div><span class="summary-caption">{{ week_minutes }} focused minutes</span></div>
+    {% if subjects %}<div class="subject-breakdown"><p class="eyebrow">WHERE YOUR TIME WENT</p><h2>Subject focus</h2>{% for subject, minutes in subjects %}<div class="subject-line"><div><span>{{ subject }}</span><strong>{{ minutes }} min</strong></div><div class="meter"><span style="width: {{ (minutes / week_minutes * 100) if week_minutes else 0 }}%"></span></div></div>{% endfor %}</div>{% endif %}
+    <div class="history-card"><div class="section-heading"><div><p class="eyebrow">YOUR RECENT WORK</p><h2>Session history</h2></div><span class="task-count">{{ entries|length }} entries</span></div>
+      {% if entries %}<div class="session-list">{% for entry in entries %}<article class="session-row"><span class="session-dot"></span><div class="session-info"><strong>{{ entry.subject }}</strong><span>{% if entry.notes %}{{ entry.notes }} · {% endif %}{{ entry.session_date.strftime('%b %d, %Y') }}</span></div><span class="session-duration">{{ entry.duration_minutes }} min</span></article>{% endfor %}</div>{% else %}<div class="empty small-empty"><div class="empty-icon">◷</div><h3>No sessions logged yet</h3><p>Log a study block to start seeing your weekly focus.</p></div>{% endif %}
+    </div>
+  </div>
+  <aside class="add-panel session-form-panel"><div class="add-heading"><span class="add-icon">＋</span><div><p class="eyebrow">RECORD A FOCUS BLOCK</p><h2>Log a session</h2></div></div>
+    <form class="task-form" method="post" action="{{ url_for('log_session') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="subject">Subject</label><input id="subject" name="subject" maxlength="60" placeholder="e.g. Biology" required>
+      <div class="form-row"><div><label for="duration_minutes">Minutes</label><input id="duration_minutes" name="duration_minutes" type="number" min="1" max="600" placeholder="45" required></div><div><label for="session_date">Date</label><input id="session_date" name="session_date" type="date" value="{{ today }}"></div></div>
+      <label for="notes">What did you work on?</label><textarea id="notes" name="notes" maxlength="300" rows="3" placeholder="Optional notes for future you"></textarea>
+      <button class="submit-button" type="submit">Save session <span>→</span></button>
+    </form><div class="tip"><span>✦</span><p><strong>Consistency beats intensity</strong><br>Even a short focused block counts.</p></div>
+  </aside>
+</section>
+{% endblock %}
+
