@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f8fc">
+  <meta name="theme-color" content="#080a0e">
   <title>{% block title %}StudyFlow{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,9 +11,10 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <header class="topbar">
     <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">S</span><span>study<span class="brand-light">flow</span></span></a>
-    <span class="top-note"><span class="live-dot"></span> Your study space</span>
+    <span class="top-note"><span class="live-dot"></span> YOUR FOCUS SPACE</span>
   </header>
   <main class="shell">
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -21,7 +22,7 @@
     {% endwith %}
     {% block content %}{% endblock %}
   </main>
-  <footer class="footer">Small steps add up. Keep going.</footer>
+  <footer class="footer">Built for focus. One task at a time.</footer>
 </body>
 </html>
 
