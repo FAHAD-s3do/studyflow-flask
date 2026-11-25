@@ -1,18 +1,21 @@
-# StudyFlow — Flask Study Planner
+# StudyFlow — Private Study Planner
 
-A dark, responsive study planner built with Flask and SQLite. Organize coursework, keep deadlines visible, and track your progress in one place.
+StudyFlow is a multi-user Flask app for students to plan coursework and record focused study time. Each account has its own private tasks and study log.
 
 ## Features
 
+- Private accounts with password hashing and login sessions
+- CSRF protection for forms and sign-out
 - Add, edit, complete, reopen, and delete study tasks
-- Record a subject, due date, and low/medium/high priority
+- Record subject, due date, and low/medium/high priority
 - Filter all tasks, active tasks, overdue tasks, or completed tasks
 - Search task names and subjects
-- Dashboard totals for all, active, completed, overdue, and due today
-- Completion progress ring
-- SQLite database is created automatically
-- Responsive black interface with no frontend build step
-- Basic server-side form validation
+- Dashboard totals for active, completed, overdue, and due-today tasks
+- Weekly study-time summary and subject breakdown
+- Log study sessions with duration, date, subject, and notes
+- SQLite database is created automatically; PostgreSQL is supported through `DATABASE_URL`
+- Responsive dark interface with no frontend build step
+- Basic validation on the server
 
 ## Run locally
 
@@ -35,7 +38,11 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open http://127.0.0.1:5000.
+Open http://127.0.0.1:5000, choose **Create account**, then start adding tasks or logging sessions.
+
+## Configuration
+
+The app uses SQLite by default. Before deploying, set a strong random `SECRET_KEY` and an appropriate `DATABASE_URL`. Set `COOKIE_SECURE=1` when serving over HTTPS. Keep `FLASK_DEBUG` unset in production.
 
 ## Project layout
 
@@ -46,16 +53,16 @@ studyflow-flask/
 ├── templates/
 │   ├── base.html
 │   ├── edit.html
-│   └── index.html
+│   ├── index.html
+│   ├── login.html
+│   ├── register.html
+│   └── sessions.html
 └── static/
     └── style.css
 ```
 
-## What this project demonstrates
+## Production checklist
 
-Flask routes, Jinja templates, form handling and validation, SQLAlchemy models and queries, SQLite persistence, flash messages, filtering, search, and CRUD operations.
+This is a portfolio and learning app foundation. Before real public use, add account email verification and password reset, database migrations and backups, rate limiting, a production WSGI server, HTTPS, monitoring, and a privacy policy. Do not use Flask's debug server on a public network. Set a strong secret key outside the source code.
 
-## Before deploying publicly
-
-Set a strong `SECRET_KEY` environment variable, turn off debug mode, and run Flask behind a production WSGI server such as Gunicorn. Add authentication and CSRF protection before allowing multiple users to manage private data.
 
