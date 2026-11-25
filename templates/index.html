@@ -3,7 +3,7 @@
 {% block content %}
 <section class="hero">
   <div><p class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL STUDY PLANNER</p><h1>Make room for<br><span>what matters.</span></h1><p class="hero-copy">A clear plan for every class, deadline, and next step.</p></div>
-  <div class="focus-card"><div class="focus-top"><span class="focus-icon">✦</span><span class="focus-label">YOUR MOMENTUM</span></div><div class="progress-ring" style="--progress: {{ progress }}%"><div class="ring-center"><strong>{{ progress }}%</strong><span>complete</span></div></div><p>{{ done }} of {{ total }} tasks finished</p><div class="focus-foot"><span class="live-dot"></span> Keep your streak going</div></div>
+  <div class="focus-card"><div class="focus-top"><span class="focus-icon">✦</span><span class="focus-label">YOUR MOMENTUM</span></div><div class="progress-ring" style="--progress: {{ progress }}%"><div class="ring-center"><strong>{{ progress }}%</strong><span>complete</span></div></div><p>{{ done }} of {{ total }} tasks finished</p><div class="focus-foot"><span class="live-dot"></span> {{ week_minutes // 60 }}h {{ week_minutes % 60 }}m focused this week</div></div>
 </section>
 <section class="stats" aria-label="Task summary">
   <article class="stat-card"><span class="stat-icon violet">▤</span><div><span class="stat-label">All tasks</span><strong>{{ total }}</strong></div><span class="stat-arrow">↗</span></article>
@@ -30,9 +30,9 @@
       <div class="task-list">
         {% for task in tasks %}
           <article class="task-row {% if task.completed %}is-done{% endif %} {% if task.overdue %}is-overdue{% endif %}">
-            <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}"><button class="check" type="submit" aria-label="{% if task.completed %}Reopen{% else %}Complete{% endif %} {{ task.title }}">{% if task.completed %}✓{% endif %}</button></form>
+            <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="check" type="submit" aria-label="{% if task.completed %}Reopen{% else %}Complete{% endif %} {{ task.title }}">{% if task.completed %}✓{% endif %}</button></form>
             <div class="task-main"><div class="task-title-line"><h3>{{ task.title }}</h3><span class="priority {{ task.priority }}">{{ task.priority }}</span></div><div class="task-meta"><span class="subject-dot"></span>{{ task.subject }}{% if task.due_date %}<span class="meta-divider">·</span><span class="{% if task.overdue %}overdue-text{% endif %}">{% if task.overdue %}Overdue · {% endif %}Due {{ task.due_date.strftime('%b %d') }}</span>{% else %}<span class="meta-divider">·</span><span>No deadline</span>{% endif %}</div></div>
-            <div class="task-actions"><a class="edit" href="{{ url_for('edit_task', task_id=task.id) }}" aria-label="Edit {{ task.title }}" title="Edit task">✎</a><form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"><button class="delete" type="submit" aria-label="Delete {{ task.title }}" title="Delete task">×</button></form></div>
+            <div class="task-actions"><a class="edit" href="{{ url_for('edit_task', task_id=task.id) }}" aria-label="Edit {{ task.title }}" title="Edit task">✎</a><form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="delete" type="submit" aria-label="Delete {{ task.title }}" title="Delete task">×</button></form></div>
           </article>
         {% endfor %}
       </div>
@@ -42,7 +42,7 @@
   </div>
   <aside class="add-panel">
     <div class="add-heading"><span class="add-icon">＋</span><div><p class="eyebrow">MAKE IT HAPPEN</p><h2>Add a task</h2></div></div>
-    <form class="task-form" method="post" action="{{ url_for('create_task') }}">
+    <form class="task-form" method="post" action="{{ url_for('create_task') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <label for="title">Task name</label><input id="title" name="title" maxlength="120" placeholder="e.g. Review Flask routes" required>
       <label for="subject">Subject</label><input id="subject" name="subject" maxlength="60" placeholder="e.g. Web development">
       <div class="form-row"><div><label for="due_date">Due date</label><input id="due_date" name="due_date" type="date"></div><div><label for="priority">Priority</label><select id="priority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div></div>
@@ -52,5 +52,4 @@
   </aside>
 </section>
 {% endblock %}
-
 
