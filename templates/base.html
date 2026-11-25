@@ -13,13 +13,12 @@
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <header class="topbar">
-    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">S</span><span>study<span class="brand-light">flow</span></span></a>
-    <span class="top-note"><span class="live-dot"></span> YOUR FOCUS SPACE</span>
+    <a class="brand" href="{{ url_for('index') if current_user.is_authenticated else url_for('login') }}"><span class="brand-mark">S</span><span>study<span class="brand-light">flow</span></span></a>
+    {% if current_user.is_authenticated %}<nav class="main-nav"><a href="{{ url_for('index') }}">Planner</a><a href="{{ url_for('sessions') }}">Study log</a></nav><div class="user-menu"><span class="user-greeting">{{ current_user.name.split()[0] }}</span><form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="logout-button" type="submit">Log out</button></form></div>{% else %}<span class="top-note"><span class="live-dot"></span> YOUR FOCUS SPACE</span>{% endif %}
   </header>
   <main class="shell">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
-    {% endwith %}
     {% block content %}{% endblock %}
   </main>
   <footer class="footer">Built for focus. One task at a time.</footer>
