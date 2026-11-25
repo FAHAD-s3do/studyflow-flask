@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Welcome · StudyFlow{% endblock %}
+{% block content %}
+<section class="auth-page">
+  <div class="auth-story"><span class="auth-kicker">A BETTER STUDY RHYTHM</span><h1>Show up for<br><span>your goals.</span></h1><p>Your tasks, deadlines, and study time in one private space.</p><div class="auth-points"><span>✦ Private student account</span><span>✦ Progress that stays yours</span></div></div>
+  <div class="auth-card"><div class="auth-heading"><div class="auth-mark">S</div><p class="eyebrow">YOUR SPACE IS READY</p><h2>Welcome back</h2><p>Log in to continue your study plan.</p></div>
+    <form class="task-form auth-form" method="post" action="{{ url_for('login') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+      <button class="submit-button" type="submit">Log in <span>→</span></button>
+    </form><p class="auth-switch">New to StudyFlow? <a href="{{ url_for('register') }}">Create your account</a></p>
+  </div>
+</section>
+{% endblock %}
+
