@@ -1,3 +1,4 @@
+import os
 from datetime import date
 
 from flask import Flask, flash, redirect, render_template, request, url_for
@@ -5,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import case, func
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "dev-change-this-before-deploying"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "studyflow-local-dev-key")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///studyflow.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -47,10 +48,14 @@ def task_form_data():
 @app.get("/")
 def index():
     status = request.args.get("status", "all")
+    if status not in {"all", "active", "overdue", "completed"}:
+        status = "all"
     search = request.args.get("q", "").strip()
     query = Task.query
     if status == "active":
         query = query.filter_by(completed=False)
+    elif status == "overdue":
+        query = query.filter(Task.completed.is_(False), Task.due_date < date.today())
     elif status == "completed":
         query = query.filter_by(completed=True)
     if search:
@@ -60,9 +65,12 @@ def index():
     total = Task.query.count()
     done = Task.query.filter_by(completed=True).count()
     active = total - done
-    overdue = sum(task.overdue for task in Task.query.all())
+    overdue = Task.query.filter(Task.completed.is_(False), Task.due_date < date.today()).count()
+    due_today = Task.query.filter_by(completed=False, due_date=date.today()).count()
+    progress = round(done / total * 100) if total else 0
     return render_template("index.html", tasks=tasks, status=status, search=search,
-                           total=total, done=done, active=active, overdue=overdue)
+                           total=total, done=done, active=active, overdue=overdue,
+                           due_today=due_today, progress=progress)
 
 
 @app.post("/tasks")
@@ -75,6 +83,22 @@ def create_task():
     db.session.commit()
     flash("Task added to your study plan.", "success")
     return redirect(url_for("index"))
+
+
+@app.route("/tasks/<int:task_id>/edit", methods=["GET", "POST"])
+def edit_task(task_id):
+    task = db.get_or_404(Task, task_id)
+    if request.method == "POST":
+        data, error = task_form_data()
+        if error:
+            flash(error, "error")
+            return render_template("edit.html", task=task)
+        for key, value in data.items():
+            setattr(task, key, value)
+        db.session.commit()
+        flash("Task updated.", "success")
+        return redirect(url_for("index", status="all"))
+    return render_template("edit.html", task=task)
 
 
 @app.post("/tasks/<int:task_id>/toggle")
