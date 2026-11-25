@@ -2,22 +2,23 @@
 {% block title %}Study Planner · StudyFlow{% endblock %}
 {% block content %}
 <section class="hero">
-  <div><p class="eyebrow">YOUR PERSONAL STUDY PLANNER</p><h1>Make room for<br><span>what matters.</span></h1><p class="hero-copy">One clear plan for every class, deadline, and next step.</p></div>
-  <div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="art-card card-one">✦ &nbsp; focus</div><div class="art-card card-two">✓ &nbsp; progress</div><div class="art-orbit"></div></div>
+  <div><p class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL STUDY PLANNER</p><h1>Make room for<br><span>what matters.</span></h1><p class="hero-copy">A clear plan for every class, deadline, and next step.</p></div>
+  <div class="focus-card"><div class="focus-top"><span class="focus-icon">✦</span><span class="focus-label">YOUR MOMENTUM</span></div><div class="progress-ring" style="--progress: {{ progress }}%"><div class="ring-center"><strong>{{ progress }}%</strong><span>complete</span></div></div><p>{{ done }} of {{ total }} tasks finished</p><div class="focus-foot"><span class="live-dot"></span> Keep your streak going</div></div>
 </section>
 <section class="stats" aria-label="Task summary">
-  <article class="stat-card"><span class="stat-icon violet">▤</span><div><span class="stat-label">All tasks</span><strong>{{ total }}</strong></div></article>
-  <article class="stat-card"><span class="stat-icon blue">◷</span><div><span class="stat-label">To do</span><strong>{{ active }}</strong></div></article>
-  <article class="stat-card"><span class="stat-icon green">✓</span><div><span class="stat-label">Completed</span><strong>{{ done }}</strong></div></article>
-  <article class="stat-card"><span class="stat-icon orange">!</span><div><span class="stat-label">Overdue</span><strong>{{ overdue }}</strong></div></article>
+  <article class="stat-card"><span class="stat-icon violet">▤</span><div><span class="stat-label">All tasks</span><strong>{{ total }}</strong></div><span class="stat-arrow">↗</span></article>
+  <article class="stat-card"><span class="stat-icon blue">◷</span><div><span class="stat-label">To do</span><strong>{{ active }}</strong></div><span class="stat-arrow">↗</span></article>
+  <article class="stat-card"><span class="stat-icon green">✓</span><div><span class="stat-label">Completed</span><strong>{{ done }}</strong></div><span class="stat-arrow">↗</span></article>
+  <article class="stat-card"><span class="stat-icon orange">!</span><div><span class="stat-label">Overdue</span><strong>{{ overdue }}</strong></div><span class="stat-note">Due today: {{ due_today }}</span></article>
 </section>
 <section class="workspace">
   <div class="task-panel">
-    <div class="section-heading"><div><p class="eyebrow">STAY ON TRACK</p><h2>Your tasks</h2></div><span class="task-count">{{ tasks|length }} shown</span></div>
+    <div class="section-heading"><div><p class="eyebrow">PLAN YOUR NEXT MOVE</p><h2>Your tasks</h2></div><span class="task-count">{{ tasks|length }} shown</span></div>
     <div class="toolbar">
       <nav class="filters" aria-label="Filter tasks">
         <a class="filter {% if status == 'all' %}selected{% endif %}" href="{{ url_for('index', status='all', q=search) }}">All</a>
         <a class="filter {% if status == 'active' %}selected{% endif %}" href="{{ url_for('index', status='active', q=search) }}">To do</a>
+        <a class="filter {% if status == 'overdue' %}selected{% endif %}" href="{{ url_for('index', status='overdue', q=search) }}">Overdue{% if overdue %}<span class="filter-count">{{ overdue }}</span>{% endif %}</a>
         <a class="filter {% if status == 'completed' %}selected{% endif %}" href="{{ url_for('index', status='completed', q=search) }}">Done</a>
       </nav>
       <form class="search" method="get" action="{{ url_for('index') }}">
@@ -28,29 +29,28 @@
     {% if tasks %}
       <div class="task-list">
         {% for task in tasks %}
-          <article class="task-row {% if task.completed %}is-done{% endif %}">
+          <article class="task-row {% if task.completed %}is-done{% endif %} {% if task.overdue %}is-overdue{% endif %}">
             <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}"><button class="check" type="submit" aria-label="{% if task.completed %}Reopen{% else %}Complete{% endif %} {{ task.title }}">{% if task.completed %}✓{% endif %}</button></form>
-            <div class="task-main"><div class="task-title-line"><h3>{{ task.title }}</h3><span class="priority {{ task.priority }}">{{ task.priority }}</span></div><div class="task-meta"><span class="subject-dot"></span>{{ task.subject }}{% if task.due_date %}<span class="meta-divider">·</span><span class="{% if task.overdue %}overdue-text{% endif %}">{% if task.overdue %}Overdue · {% endif %}Due {{ task.due_date.strftime('%b %d') }}</span>{% endif %}</div></div>
-            <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"><button class="delete" type="submit" aria-label="Delete {{ task.title }}" title="Delete task">×</button></form>
+            <div class="task-main"><div class="task-title-line"><h3>{{ task.title }}</h3><span class="priority {{ task.priority }}">{{ task.priority }}</span></div><div class="task-meta"><span class="subject-dot"></span>{{ task.subject }}{% if task.due_date %}<span class="meta-divider">·</span><span class="{% if task.overdue %}overdue-text{% endif %}">{% if task.overdue %}Overdue · {% endif %}Due {{ task.due_date.strftime('%b %d') }}</span>{% else %}<span class="meta-divider">·</span><span>No deadline</span>{% endif %}</div></div>
+            <div class="task-actions"><a class="edit" href="{{ url_for('edit_task', task_id=task.id) }}" aria-label="Edit {{ task.title }}" title="Edit task">✎</a><form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"><button class="delete" type="submit" aria-label="Delete {{ task.title }}" title="Delete task">×</button></form></div>
           </article>
         {% endfor %}
       </div>
     {% else %}
-      <div class="empty"><div class="empty-icon">✦</div><h3>{% if search %}No matching tasks{% else %}A fresh page{% endif %}</h3><p>{% if search %}Try another search, or clear the search box.{% else %}Add your first task and give your goals a place to start.{% endif %}</p></div>
+      <div class="empty"><div class="empty-icon">✦</div><h3>{% if search %}No matching tasks{% elif status == 'overdue' %}Nothing overdue{% else %}A fresh page{% endif %}</h3><p>{% if search %}Try another search, or clear the search box.{% elif status == 'overdue' %}You are all caught up. Nice work.{% else %}Add your first task and give your goals a place to start.{% endif %}</p></div>
     {% endif %}
   </div>
   <aside class="add-panel">
-    <div class="add-heading"><span class="add-icon">＋</span><div><p class="eyebrow">A LITTLE PROGRESS</p><h2>Add a task</h2></div></div>
+    <div class="add-heading"><span class="add-icon">＋</span><div><p class="eyebrow">MAKE IT HAPPEN</p><h2>Add a task</h2></div></div>
     <form class="task-form" method="post" action="{{ url_for('create_task') }}">
       <label for="title">Task name</label><input id="title" name="title" maxlength="120" placeholder="e.g. Review Flask routes" required>
       <label for="subject">Subject</label><input id="subject" name="subject" maxlength="60" placeholder="e.g. Web development">
       <div class="form-row"><div><label for="due_date">Due date</label><input id="due_date" name="due_date" type="date"></div><div><label for="priority">Priority</label><select id="priority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div></div>
       <button class="submit-button" type="submit">Add to my plan <span>→</span></button>
     </form>
-    <div class="tip"><span>✦</span><p><strong>Make it manageable</strong><br>Break a big goal into small, clear tasks.</p></div>
+    <div class="tip"><span>✦</span><p><strong>Small wins build momentum</strong><br>Break big goals into clear next steps.</p></div>
   </aside>
 </section>
 {% endblock %}
-
 
 
