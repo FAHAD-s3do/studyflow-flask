@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Study Planner · StudyFlow{% endblock %}
+{% block content %}
+<section class="hero">
+  <div><p class="eyebrow">YOUR PERSONAL STUDY PLANNER</p><h1>Make room for<br><span>what matters.</span></h1><p class="hero-copy">One clear plan for every class, deadline, and next step.</p></div>
+  <div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="art-card card-one">✦ &nbsp; focus</div><div class="art-card card-two">✓ &nbsp; progress</div><div class="art-orbit"></div></div>
+</section>
+<section class="stats" aria-label="Task summary">
+  <article class="stat-card"><span class="stat-icon violet">▤</span><div><span class="stat-label">All tasks</span><strong>{{ total }}</strong></div></article>
+  <article class="stat-card"><span class="stat-icon blue">◷</span><div><span class="stat-label">To do</span><strong>{{ active }}</strong></div></article>
+  <article class="stat-card"><span class="stat-icon green">✓</span><div><span class="stat-label">Completed</span><strong>{{ done }}</strong></div></article>
+  <article class="stat-card"><span class="stat-icon orange">!</span><div><span class="stat-label">Overdue</span><strong>{{ overdue }}</strong></div></article>
+</section>
+<section class="workspace">
+  <div class="task-panel">
+    <div class="section-heading"><div><p class="eyebrow">STAY ON TRACK</p><h2>Your tasks</h2></div><span class="task-count">{{ tasks|length }} shown</span></div>
+    <div class="toolbar">
+      <nav class="filters" aria-label="Filter tasks">
+        <a class="filter {% if status == 'all' %}selected{% endif %}" href="{{ url_for('index', status='all', q=search) }}">All</a>
+        <a class="filter {% if status == 'active' %}selected{% endif %}" href="{{ url_for('index', status='active', q=search) }}">To do</a>
+        <a class="filter {% if status == 'completed' %}selected{% endif %}" href="{{ url_for('index', status='completed', q=search) }}">Done</a>
+      </nav>
+      <form class="search" method="get" action="{{ url_for('index') }}">
+        <input type="hidden" name="status" value="{{ status }}"><label class="sr-only" for="search">Search tasks</label>
+        <span aria-hidden="true">⌕</span><input id="search" name="q" value="{{ search }}" placeholder="Search tasks…"><button type="submit" aria-label="Search">↵</button>
+      </form>
+    </div>
+    {% if tasks %}
+      <div class="task-list">
+        {% for task in tasks %}
+          <article class="task-row {% if task.completed %}is-done{% endif %}">
+            <form method="post" action="{{ url_for('toggle_task', task_id=task.id) }}"><button class="check" type="submit" aria-label="{% if task.completed %}Reopen{% else %}Complete{% endif %} {{ task.title }}">{% if task.completed %}✓{% endif %}</button></form>
+            <div class="task-main"><div class="task-title-line"><h3>{{ task.title }}</h3><span class="priority {{ task.priority }}">{{ task.priority }}</span></div><div class="task-meta"><span class="subject-dot"></span>{{ task.subject }}{% if task.due_date %}<span class="meta-divider">·</span><span class="{% if task.overdue %}overdue-text{% endif %}">{% if task.overdue %}Overdue · {% endif %}Due {{ task.due_date.strftime('%b %-d') if not task.overdue else task.due_date.strftime('%b %d') }}</span>{% endif %}</div></div>
+            <form method="post" action="{{ url_for('delete_task', task_id=task.id) }}"><button class="delete" type="submit" aria-label="Delete {{ task.title }}" title="Delete task">×</button></form>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty"><div class="empty-icon">✦</div><h3>{% if search %}No matching tasks{% else %}A fresh page{% endif %}</h3><p>{% if search %}Try another search, or clear the search box.{% else %}Add your first task and give your goals a place to start.{% endif %}</p></div>
+    {% endif %}
+  </div>
+  <aside class="add-panel">
+    <div class="add-heading"><span class="add-icon">＋</span><div><p class="eyebrow">A LITTLE PROGRESS</p><h2>Add a task</h2></div></div>
+    <form class="task-form" method="post" action="{{ url_for('create_task') }}">
+      <label for="title">Task name</label><input id="title" name="title" maxlength="120" placeholder="e.g. Review Flask routes" required>
+      <label for="subject">Subject</label><input id="subject" name="subject" maxlength="60" placeholder="e.g. Web development">
+      <div class="form-row"><div><label for="due_date">Due date</label><input id="due_date" name="due_date" type="date"></div><div><label for="priority">Priority</label><select id="priority" name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></div></div>
+      <button class="submit-button" type="submit">Add to my plan <span>→</span></button>
+    </form>
+    <div class="tip"><span>✦</span><p><strong>Make it manageable</strong><br>Break a big goal into small, clear tasks.</p></div>
+  </aside>
+</section>
+{% endblock %}
+
