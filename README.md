@@ -1,163 +1,148 @@
 <div align="center">
 
-# StudyFlow
+<img src="assets/studyflow-banner.svg" alt="StudyFlow — Plan smarter. Focus deeper. Make progress visible." width="100%">
 
-### Plan with clarity. Study with intention.
+<br>
 
-A private, multi-user study planner built with **Python, Flask, and SQLAlchemy**. Organize coursework, stay ahead of deadlines, and turn focused study sessions into visible progress.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.1-111827?style=flat-square&logo=flask)](https://flask.palletsprojects.com/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-D71F00?style=flat-square)](https://www.sqlalchemy.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://sqlite.org/)
+![Responsive](https://img.shields.io/badge/UI-Responsive-14B8A6?style=flat-square)
+![Motion](https://img.shields.io/badge/README-SVG%20Motion-8B5CF6?style=flat-square)
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-3.1-111827?style=for-the-badge&logo=flask)
-![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-D71F00?style=for-the-badge)
-![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+**A focused, private study planner for students.**
 
-**A calm workspace for consistent progress.**
+Plan coursework, manage deadlines, and turn focused study time into visible progress — all in one calm workspace.
 
 </div>
 
 ---
 
-## Overview
+## ✦ What is StudyFlow?
 
-StudyFlow gives each student a personal workspace to manage academic tasks and record focused study time. The dashboard brings deadlines, priorities, completion progress, and weekly study activity into one responsive interface.
+StudyFlow is a multi-user Flask application that gives every student a personal space to organize academic work. Its dashboard combines task planning, deadline awareness, progress tracking, and study-session logging in a responsive dark interface.
 
-## Product highlights
+## ◈ Feature set
 
-| Area | Capabilities |
-| --- | --- |
-| Task planning | Create, edit, complete, reopen, and delete coursework tasks |
-| Prioritization | Organize work by subject, due date, and priority |
-| Task discovery | Filter active, overdue, and completed tasks; search by title or subject |
-| Progress dashboard | Track completion rate, active tasks, overdue work, and tasks due today |
-| Study journal | Log duration, subject, date, and optional notes |
-| Time insights | Review weekly focus time and time grouped by subject |
-| Private accounts | Keep each student's tasks and sessions scoped to their account |
+<table>
+<tr>
+<td width="50%" valign="top">
 
-## Interface & experience
+### ▸ Plan & prioritize
+- Create, edit, complete, reopen, and delete tasks
+- Organize by subject, due date, and priority
+- Search tasks and filter by status
+</td>
+<td width="50%" valign="top">
 
-- Responsive dark interface for desktop and mobile.
-- Subtle entrance transitions across dashboard sections and cards.
-- Gentle ambient background motion and progress-ring animation.
-- Interactive hover feedback for cards, task rows, and controls.
-- Reduced-motion support for accessibility.
-- CSS-based animation; no front-end animation framework required.
+### ▸ Measure progress
+- Completion percentage and task metrics
+- Due-today and overdue visibility
+- Weekly study-time summary
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
-## Technology
+### ▸ Track focus
+- Log subject, duration, date, and notes
+- Review recent study sessions
+- See time grouped by subject
+</td>
+<td width="50%" valign="top">
 
-| Layer | Stack |
-| --- | --- |
-| Application | Python 3.10+, Flask 3.1 |
-| Data layer | Flask-SQLAlchemy / SQLAlchemy |
+### ▸ Keep it personal
+- Individual student accounts
+- Password hashing
+- Account-scoped task and session records
+</td>
+</tr>
+</table>
+
+## ⌁ Built with
+
+| Layer | Technology |
+|---|---|
+| Backend | Python, Flask |
+| ORM | Flask-SQLAlchemy / SQLAlchemy |
 | Database | SQLite by default; PostgreSQL supported |
-| Authentication | Flask-Login, Werkzeug password hashing |
+| Authentication | Flask-Login, Werkzeug |
 | Form security | Flask-WTF CSRF protection |
-| Rendering | Jinja2 templates |
-| Styling | Responsive CSS, CSS keyframe animations |
+| Frontend | Jinja2, HTML, responsive CSS |
+| Visual motion | Custom SVG + CSS keyframe animations |
 
-## Getting started
+## ⤵ Run locally
 
-### Prerequisites
-- Python 3.10 or newer
-- Git
-- Windows, macOS, or Linux
+**Requirements:** Python 3.10+ and Git.
 
-### 1. Clone the repository
 ```bash
 git clone https://github.com/FAHAD-s3do/studyflow-flask.git
 cd studyflow-flask
-```
-
-### 2. Create and activate a virtual environment
-
-**Windows — Command Prompt**
-```bat
 python -m venv .venv
-.venv\Scripts\activate.bat
 ```
 
-**macOS / Linux**
+Activate the environment:
+
 ```bash
-python3 -m venv .venv
+# Windows
+.venv\Scripts\activate
+
+# macOS / Linux
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+Install and launch:
+
 ```bash
 pip install -r requirements.txt
-```
-
-### 4. Configure and run
-
-**PowerShell**
-```powershell
-$env:SECRET_KEY = "replace-with-a-long-random-secret"
-$env:COOKIE_SECURE = "0"
-python app.py
-```
-
-**macOS / Linux**
-```bash
-export SECRET_KEY="replace-with-a-long-random-secret"
-export COOKIE_SECURE="0"
 python app.py
 ```
 
 Open **http://127.0.0.1:5000** and create your account.
 
-> The Flask development server is for local development only. Use a production WSGI server and HTTPS for deployment.
+For deployment, configure a strong `SECRET_KEY`, use HTTPS with `COOKIE_SECURE=1`, and run behind a production WSGI server. Never commit real credentials.
 
-## Project structure
+## ◉ Repository map
 
 ```text
 studyflow-flask/
-├── app.py                  # Flask routes, models, and setup
-├── requirements.txt        # Python dependencies
+├── app.py
+├── requirements.txt
+├── assets/
+│   ├── studyflow-banner.svg
+│   └── studyflow-mark.svg
 ├── static/
-│   └── style.css           # Responsive UI and motion system
+│   └── style.css
 └── templates/
-    ├── base.html           # Shared layout and navigation
-    ├── index.html          # Study planner dashboard
-    ├── sessions.html       # Study log and weekly insights
-    ├── edit.html           # Task editing
-    ├── login.html          # Sign in
-    └── register.html       # Account creation
+    ├── base.html
+    ├── index.html
+    ├── sessions.html
+    ├── edit.html
+    ├── login.html
+    └── register.html
 ```
 
-## Configuration
+## ⟡ Security & production considerations
 
-| Variable | Purpose |
-| --- | --- |
-| `SECRET_KEY` | Secret used to sign sessions and CSRF tokens |
-| `DATABASE_URL` | Optional SQLAlchemy database URL; PostgreSQL is supported |
-| `COOKIE_SECURE` | Set to `1` when served over HTTPS |
-| `FLASK_DEBUG` | Set to `1` only for local debugging |
+Current safeguards include password hashing, CSRF-protected forms, HTTP-only / SameSite session cookies, and account-scoped data queries.
 
-Never commit real secrets, credentials, or production database URLs.
+Before a public production launch, prioritize email verification, password reset, database migrations, backups, rate limiting, security headers, monitoring, and a production WSGI deployment.
 
-## Security notes
+## ◎ Roadmap
 
-The application uses password hashing, CSRF protection for forms, HTTP-only and SameSite session cookies, and account-scoped task and study-session queries.
-
-Before a public production launch, consider adding:
-- Email verification and secure password-reset flows.
-- Database migrations, automated backups, and restore testing.
-- Login and form rate limiting.
-- Security headers, centralized error handling, and monitoring.
-- A production WSGI server behind HTTPS.
-- A documented privacy and data-retention policy.
-
-## Roadmap
-
-- [ ] Add automated tests for authentication and task workflows.
-- [ ] Add database migrations.
-- [ ] Add password reset and email verification.
-- [ ] Add CI checks and deployment workflow.
-- [ ] Publish a hosted demo and real application screenshots.
+- [ ] Automated tests for authentication and task workflows
+- [ ] Database migrations and backup automation
+- [ ] Password reset and email verification
+- [ ] CI checks and deployment workflow
+- [ ] Hosted demo and real product screenshots
 
 ---
 
 <div align="center">
 
-**StudyFlow** · Built for focus, one task at a time.
+*Build a better study rhythm — one focused session at a time.*
+
+**StudyFlow** · Designed & built with Python and Flask
 
 </div>
